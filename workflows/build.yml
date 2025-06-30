@@ -1,0 +1,31 @@
+name: Build EXE
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller -r requirements.txt
+
+    - name: Build with PyInstaller
+      run: pyinstaller --onefile --noconsole mono_focus.py
+
+    - name: Upload executable
+      uses: actions/upload-artifact@v4
+      with:
+        name: my-app
+        path: dist/mono_focus.exe
